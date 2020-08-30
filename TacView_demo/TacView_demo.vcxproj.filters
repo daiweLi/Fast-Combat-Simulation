@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="TacView">
+      <UniqueIdentifier>{f2fad799-0f89-451b-b764-316ba46a7995}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\TacView\TacViewDefine.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\TacView\TacViewFile_T.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\TacView\TacViewServer_T.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\TacView\TacViewOutput.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\TacView\TacViewFile_T.cpp">
+      <Filter>TacView</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\TacView\TacViewServer_T.cpp">
+      <Filter>TacView</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\demo\tacview_demo.cpp" />
+    <ClCompile Include="..\Source\TacView\TacViewOutput.cpp">
+      <Filter>TacView</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
