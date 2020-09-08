@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="TacView">
+      <UniqueIdentifier>{76d25d6a-3074-4d2e-83b8-167bade263fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FlyTac">
+      <UniqueIdentifier>{125519da-05cd-497c-a7df-c010a6a2027b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tools">
+      <UniqueIdentifier>{1ca44ae8-38f4-4b6d-80db-1f3b512cf57d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\FlyTac\aircraft.cpp">
+      <Filter>FlyTac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FlyTac\missile.cpp">
+      <Filter>FlyTac</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\TacView\TacViewFile_T.cpp">
+      <Filter>TacView</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\TacView\TacViewOutput.cpp">
+      <Filter>TacView</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\TacView\TacViewServer_T.cpp">
+      <Filter>TacView</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Tools\coordinate.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Tools\JoySticks.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Tools\tool_function.cpp">
+      <Filter>Tools</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\demo\FlyTac_demo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\FlyTac\aircraft.h">
+      <Filter>FlyTac</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\FlyTac\missile.h">
+      <Filter>FlyTac</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\TacView\TacViewDefine.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\TacView\TacViewFile_T.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\TacView\TacViewOutput.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\TacView\TacViewServer_T.h">
+      <Filter>TacView</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Tools\coordinate.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Tools\JoySticks.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Tools\tool_function.h">
+      <Filter>Tools</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
