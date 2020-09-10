@@ -10,6 +10,9 @@
     <Filter Include="Tools">
       <UniqueIdentifier>{b4a93c95-61bb-45cc-a4b3-24ff0b71a9ff}</UniqueIdentifier>
     </Filter>
+    <Filter Include="CombatSim">
+      <UniqueIdentifier>{0c82d5d3-4dea-4ab9-8095-e01c75d8959c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\FlyTac\aircraft.cpp">
@@ -37,6 +40,9 @@
       <Filter>Tools</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\demo\AirCombat_demo.cpp" />
+    <ClCompile Include="..\Source\CombatSimulation\UnitDefine.cpp">
+      <Filter>CombatSim</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\FlyTac\aircraft.h">
@@ -65,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\Tools\tool_function.h">
       <Filter>Tools</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\CombatSimulation\UnitDefine.h">
+      <Filter>CombatSim</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

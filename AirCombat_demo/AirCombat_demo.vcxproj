@@ -138,6 +138,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\CombatSimulation\UnitDefine.cpp" />
     <ClCompile Include="..\Source\demo\AirCombat_demo.cpp" />
     <ClCompile Include="..\Source\FlyTac\aircraft.cpp" />
     <ClCompile Include="..\Source\FlyTac\missile.cpp" />
@@ -149,6 +150,7 @@
     <ClCompile Include="..\Source\Tools\tool_function.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\CombatSimulation\UnitDefine.h" />
     <ClInclude Include="..\Source\FlyTac\aircraft.h" />
     <ClInclude Include="..\Source\FlyTac\missile.h" />
     <ClInclude Include="..\Source\TacView\TacViewDefine.h" />
