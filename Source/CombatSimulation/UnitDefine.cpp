@@ -162,8 +162,12 @@ int Missile_Object_C::Init(
 
 
 int Missile_Object_C::Run(
-	double d_time)
+	double d_time,
+	Aircraft_Object_C* target_air_in)
 {
+	target_air = target_air_in;
+
+	Matrix4d target_state = target_air->craft_state;
 
 	Vector3d TargetMissile;
 	//导弹与目标距离（米）
@@ -213,10 +217,13 @@ int Missile_Object_C::HitCheck()
 	static double missile_journey = 0;
 
 	if (distance_target <= destroy_range) {
+
+		target_air->base_live = 0;
+
 		return -1;
 	}
 
-	double d_distance = (target_state.row(0) - missile_position_last.row(0)).norm();
+	double d_distance = (missile_state.row(0) - missile_position_last.row(0)).norm();
 	missile_journey += d_distance;
 
 	if (missile_journey >= max_journey) {
@@ -227,4 +234,23 @@ int Missile_Object_C::HitCheck()
 	missile_position_last = missile_state;
 
 	return 1;
+}
+
+
+
+int Battlefield_C::MissileFire(
+	Aircraft_Object_C& attack_air,
+	Aircraft_Object_C& target_air)
+{
+	missile_count++;
+
+	missile_list[missile_count - 1].Init(missile_count, "PL-10", attack_air.base_team,
+		attack_air.coordinate_longitude, attack_air.coordinate_latitude, attack_air.coordinate_altitude,
+		attack_air.coordinate_roll, attack_air.coordinate_pitch, attack_air.coordinate_yaw,
+		attack_air.velocity_north, attack_air.velocity_east, attack_air.velocity_downward);
+
+	missile_list[missile_count - 1].father_id = attack_air.Sim_id;
+	missile_list[missile_count - 1].target_air = &target_air;
+
+	return 0;
 }

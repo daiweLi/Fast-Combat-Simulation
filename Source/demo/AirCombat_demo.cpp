@@ -7,8 +7,9 @@ using namespace CombatSimulation;
 
 int main() {
 	
-	Missile_Object_C missile;
-	cout << missile.destroy_range << endl;
+	Battlefield_C battlefield;
+
+
 
 
 	return 0;

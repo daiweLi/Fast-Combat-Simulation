@@ -74,6 +74,9 @@ namespace CombatSimulation
 	class Unit_Object_C
 	{
 	public:
+		Unit_Object_C() {}
+		~Unit_Object_C() {}
+
 		int  							Sim_id;							//!< 编号，唯一标识
 		int  							base_live;						//!< 存活，0 死亡，1 存活
 
@@ -106,9 +109,12 @@ namespace CombatSimulation
 			double							in_velocity_downward);
 	};
 
-	class Aircraft_Object_C:Unit_Object_C
+	class Aircraft_Object_C:public Unit_Object_C
 	{
 	public:
+		Aircraft_Object_C() {}
+		~Aircraft_Object_C() {}
+
 		int								radar_state;					        //!< 雷达状态 0-关机 1-搜索 2-锁定
 		int								locked_id_count;						//!< 锁定目标数量
 		int								locked_id_list[max_object];				//!< 锁定目标列表
@@ -140,14 +146,16 @@ namespace CombatSimulation
 		
 	};
 
-	class Missile_Object_C :Unit_Object_C
+	class Missile_Object_C :public Unit_Object_C
 	{
 	public:
+		Missile_Object_C() {}
+		~Missile_Object_C() {}
 		int								father_id;								//!< 发射机id
 		int								missile_live;					        //!< 导弹状态 1-运行中  0-未发射/死亡 -1-命中 -2-超出范围未命中
 		int								radar_state;					        //!< 末制导雷达状态 0-雷达未捕获目标  1-末制导雷达捕获目标
 		int								lead_state;								//!< 引导状态 0-未被引导 1-引导中
-		int								target_id;								//!< 目标id
+		Aircraft_Object_C*				target_air;								//!< 目标飞机
 
 		double							destroy_range = 250;					//!< 杀伤半径，单位：米
 		double							max_journey = 30000;					//!< 最大射程，单位：米
@@ -166,16 +174,15 @@ namespace CombatSimulation
 			double in_velocity_east,
 			double in_velocity_downward);
 
-		virtual int Run(double d_time);
+		virtual int Run(double d_time,
+			Aircraft_Object_C* target_air_in);
 
 		int HitCheck();
 
 		//***********FlyTac**************//
 		Eigen::Matrix4d					missile_state;							//!< 导弹状态
 		Eigen::Vector4d					missile_handle;							//!< 导弹控制参数
-
-		Eigen::Matrix4d					target_state;							//!< 导弹目标机状态
-		
+	
 
 	private:
 		//导弹与目标距离（米）
@@ -189,18 +196,30 @@ namespace CombatSimulation
 
 
 	// --------------------------------------------------------------------------------------------------------------------------------
-	/**
-	*   @brief          仿真战场内容。
-	*   @details        仿真战场内容。
-	*/
+/**
+*   @brief          仿真战场内容。
+*   @details        仿真战场内容。
+*/
 	class Battlefield_C
 	{
+
 	public:
+		Battlefield_C() {
+			time = 0;
+			aircraft_count = 0;
+			missile_count = 0;
+		}
+		~Battlefield_C() {}
+
 		double							time;							//!< 时标
 		int								aircraft_count;					//!< 飞行器 数量
-		Aircraft_Object_C				aircraft[max_object];			//!< 飞行器 列表
+		Aircraft_Object_C				aircraft_list[max_object];			//!< 飞行器 列表
 		int								missile_count;					//!< 导弹 数量
-		Missile_Object_C				event[max_object];				//!< 导弹 列表
+		Missile_Object_C				missile_list[max_object];				//!< 导弹 列表
+
+		int MissileFire(
+			Aircraft_Object_C& attack_air,
+			Aircraft_Object_C& target_air);
 	};
 }
 
