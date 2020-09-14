@@ -41,10 +41,13 @@ namespace CombatSimulation
 	*   @name           数据长度宏定义。
 	*   @{
 	*/
-	#define max_str 1024  //最大字符串长度
-	#define max_object 16 //最大仿真实体数
-	// #define max_event 4
-	// #define net_buffer_size 1024*16
+#define max_str 1024  //最大字符串长度
+#define max_object 16 //最大仿真实体数
+
+#define CS_OK 0
+#define CS_LIVE 1
+#define CS_NOT_LIVE -1
+#define CS_MISS -2
 	/** @}  */
 
 	// --------------------------------------------------------------------------------------------------------------------------------
@@ -61,7 +64,7 @@ namespace CombatSimulation
 		char  							briefing[max_str];				//!< 任务简报。
 		double							reference_longitude;			//!< 参考点经度，单位：deg
 		double							reference_latitude;				//!< 参考点纬度，单位：deg
-		double							reference_altitude;				//!< 参考点高度，单位：deg
+		double							reference_altitude;				//!< 参考点高度，单位：米
 	};
 
 
@@ -74,8 +77,12 @@ namespace CombatSimulation
 	class Unit_Object_C
 	{
 	public:
-		Unit_Object_C() {}
+		Unit_Object_C() {
+			base_live = 0;
+		}
 		~Unit_Object_C() {}
+
+		BattlefieldHeader_T*			p_battle_header;					//!< 战场信息
 
 		int  							Sim_id;							//!< 编号，唯一标识
 		int  							base_live;						//!< 存活，0 死亡，1 存活
@@ -95,6 +102,18 @@ namespace CombatSimulation
 		double							velocity_east;					//!< 速度，东向，单位：米/秒
 		double							velocity_downward;				//!< 速度，地面方向，单位：米/秒
 
+// --------------------------------------------------------------------------------------------------------------------------------
+/**
+*   @brief          设置单位坐标
+*   @details        设置单位坐标
+*   @param[in]      in_coordinate_longitude             坐标，经度，单位：度
+*   @param[in]      in_coordinate_latitude              坐标，纬度，单位：度
+*   @param[in]      in_coordinate_altitude              坐标，高度，单位：米
+*   @param[in]      in_coordinate_roll                  坐标，滚转角，单位：度
+*   @param[in]      in_coordinate_pitch                 坐标，俯仰角，单位：度
+*   @param[in]      in_coordinate_yaw					坐标，偏航角，单位：度
+*   @retval         0                    正常
+*/
 		int SetCoordinate(
 			double							in_coordinate_longitude,
 			double							in_coordinate_latitude,
@@ -103,6 +122,15 @@ namespace CombatSimulation
 			double							in_coordinate_pitch,
 			double							in_coordinate_yaw);
 
+		// --------------------------------------------------------------------------------------------------------------------------------
+		/**
+		*   @brief          设置单位速度
+		*   @details        设置单位速度
+		*   @param[in]      in_velocity_north             速度，北向，单位：米/秒
+		*   @param[in]      in_velocity_east              速度，东向，单位：米/秒
+		*   @param[in]      in_velocity_downward          速度，地面方向，单位：米/秒
+		*   @retval         0                    正常
+		*/
 		int SetVelocity(
 			double							in_velocity_north,
 			double							in_velocity_east,
@@ -121,6 +149,24 @@ namespace CombatSimulation
 
 		int								mounted_missile_count;					//!< 挂载的导弹数量
 
+// --------------------------------------------------------------------------------------------------------------------------------
+/**
+*   @brief          初始化一个飞机实体
+*   @details        初始化一个飞机实体
+*   @param[in]      in_simulation_id        仿真id，唯一标识
+*   @param[in]      in_base_name            对象名字，例：F-16
+*   @param[in]      in_base_team            所属队伍 1-红方 2-蓝方
+*   @param[in]      in_lon                  坐标，经度，单位：度
+*   @param[in]      in_lat                  坐标，纬度，单位：度
+*   @param[in]      in_alt                  坐标，高度，单位：米
+*   @param[in]      in_roll                 坐标，滚转角，单位：度
+*   @param[in]      in_pitch                坐标，俯仰角，单位：度
+*   @param[in]      in_yaw					坐标，偏航角，单位：度
+*   @param[in]      in_velocity_north       速度，北向，单位：米/秒
+*   @param[in]      in_velocity_east		速度，东向，单位：米/秒
+*   @param[in]      in_velocity_downward	速度，地面方向，单位：米/秒
+*   @retval         0                    正常
+*/
 		virtual int Init(
 			int in_simulation_id,
 			std::string in_base_name,
@@ -135,6 +181,15 @@ namespace CombatSimulation
 			double in_velocity_east,
 			double in_velocity_downward);
 
+
+		// --------------------------------------------------------------------------------------------------------------------------------
+		/**
+		*   @brief          飞机实体单步解算
+		*   @details        飞机实体单步解算
+		*   @param[in]      d_time          单步时间间隔 单位：秒
+		*   @retval         0               正常
+		*   @retval         -1              飞机已死亡
+		*/
 		virtual int Run(double d_time);
 
 		//int MissileFire(int target_id);
@@ -149,17 +204,37 @@ namespace CombatSimulation
 	class Missile_Object_C :public Unit_Object_C
 	{
 	public:
-		Missile_Object_C() {}
+		Missile_Object_C() {
+			missile_live = 0;
+		}
 		~Missile_Object_C() {}
 		int								father_id;								//!< 发射机id
 		int								missile_live;					        //!< 导弹状态 1-运行中  0-未发射/死亡 -1-命中 -2-超出范围未命中
 		int								radar_state;					        //!< 末制导雷达状态 0-雷达未捕获目标  1-末制导雷达捕获目标
 		int								lead_state;								//!< 引导状态 0-未被引导 1-引导中
-		Aircraft_Object_C*				target_air;								//!< 目标飞机
+		Aircraft_Object_C*				p_target_air;								//!< 目标飞机
 
 		double							destroy_range = 250;					//!< 杀伤半径，单位：米
 		double							max_journey = 30000;					//!< 最大射程，单位：米
 
+// --------------------------------------------------------------------------------------------------------------------------------
+/**
+*   @brief          初始化一个导弹实体
+*   @details        初始化一个导弹实体
+*   @param[in]      in_simulation_id        仿真id，唯一标识
+*   @param[in]      in_base_name            对象名字，例：F-16
+*   @param[in]      in_base_team            所属队伍 1-红方 2-蓝方
+*   @param[in]      in_lon                  坐标，经度，单位：度
+*   @param[in]      in_lat                  坐标，纬度，单位：度
+*   @param[in]      in_alt                  坐标，高度，单位：米
+*   @param[in]      in_roll                 坐标，滚转角，单位：度
+*   @param[in]      in_pitch                坐标，俯仰角，单位：度
+*   @param[in]      in_yaw					坐标，偏航角，单位：度
+*   @param[in]      in_velocity_north       速度，北向，单位：米/秒
+*   @param[in]      in_velocity_east		速度，东向，单位：米/秒
+*   @param[in]      in_velocity_downward	速度，地面方向，单位：米/秒
+*   @retval         0                    正常
+*/
 		virtual int Init(
 			int in_simulation_id,
 			std::string in_base_name,
@@ -174,9 +249,24 @@ namespace CombatSimulation
 			double in_velocity_east,
 			double in_velocity_downward);
 
-		virtual int Run(double d_time,
-			Aircraft_Object_C* target_air_in);
+		// --------------------------------------------------------------------------------------------------------------------------------
+		/**
+		*   @brief          导弹实体单步解算
+		*   @details        导弹实体单步解算
+		*   @param[in]      d_time          单步时间间隔 单位：秒
+		*   @retval         0               正常
+		*   @retval         -1              导弹已死亡
+		*/
+		virtual int Run(double d_time);
 
+		// --------------------------------------------------------------------------------------------------------------------------------
+		/**
+		*   @brief          导弹命中判定
+		*   @details        导弹命中判定
+		*   @retval         0               运行中，未命中
+		*   @retval         -1              已命中
+		*   @retval         -2              超出射程，未命中
+		*/
 		int HitCheck();
 
 		//***********FlyTac**************//
@@ -190,8 +280,8 @@ namespace CombatSimulation
 
 		//***********FlyTac**************//
 		//导弹过点飞控制参数
-		double missile_errA, missile_errP, missile_errR,
-			missile_errAsum, missile_errPsum;
+		double missile_errA = 0, missile_errP = 0, missile_errR = 0,
+			missile_errAsum = 0, missile_errPsum = 0;
 	};
 
 
@@ -208,15 +298,46 @@ namespace CombatSimulation
 			time = 0;
 			aircraft_count = 0;
 			missile_count = 0;
+
+			for (int i = 0; i < max_object; i++) {
+				aircraft_list[i].p_battle_header = &battle_header;
+				missile_list[i].p_battle_header = &battle_header;
+			}
 		}
+
 		~Battlefield_C() {}
 
 		double							time;							//!< 时标
-		int								aircraft_count;					//!< 飞行器 数量
-		Aircraft_Object_C				aircraft_list[max_object];			//!< 飞行器 列表
-		int								missile_count;					//!< 导弹 数量
-		Missile_Object_C				missile_list[max_object];				//!< 导弹 列表
+		BattlefieldHeader_T				battle_header;					//!< 战场信息
 
+		int								aircraft_count;					//!< 飞行器 数量
+		Aircraft_Object_C				aircraft_list[max_object];		//!< 飞行器 列表
+		int								missile_count;					//!< 导弹 数量
+		Missile_Object_C				missile_list[max_object];		//!< 导弹 列表
+
+// --------------------------------------------------------------------------------------------------------------------------------
+/**
+*   @brief          设置参考点坐标
+*   @details        设置参考点坐标
+*   @param[in]      in_reference_longitude             参考点经度，单位：deg
+*   @param[in]      in_reference_latitude              参考点纬度，单位：deg
+*   @param[in]      in_reference_altitude              参考点高度，单位：米
+*   @retval         0                    正常
+*/
+		int InitCoordinate(
+			double							in_reference_longitude,
+			double							in_reference_latitude,
+			double							in_reference_altitude);
+
+
+		// --------------------------------------------------------------------------------------------------------------------------------
+		/**
+		*   @brief          飞机发射导弹
+		*   @details        飞机发射导弹
+		*   @param[in]      attack_air             发射机
+		*   @param[in]      target_air             目标机
+		*   @retval         0                    正常
+		*/
 		int MissileFire(
 			Aircraft_Object_C& attack_air,
 			Aircraft_Object_C& target_air);

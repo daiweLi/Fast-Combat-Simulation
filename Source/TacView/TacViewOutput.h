@@ -129,7 +129,7 @@ public:
 	int OneFrameFlightState(
 		int object_id,
 		int flight_id,
-		bool flight_valid,
+		int flight_valid,
 		double lon,
 		double lat,
 		double alt,
@@ -164,7 +164,7 @@ public:
 		int object_id,
 		int missile_id,
 		std::string missile_color,
-		bool missile_valid,
+		int missile_valid,
 		double lon,
 		double lat,
 		double alt,

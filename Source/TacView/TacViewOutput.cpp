@@ -24,6 +24,9 @@ TacViewOutput::TacViewOutput()
 {
 	server = new TacViewServer_T();
 	state = new State_T;
+
+	state->object_count = 0;
+	state->event_count = 0;
 }
 
 TacViewOutput::~TacViewOutput() 
@@ -194,7 +197,7 @@ int TacViewOutput::SendOneFrame(
 int TacViewOutput::OneFrameFlightState(
     int object_id,
     int flight_id,
-    bool flight_live,
+    int flight_live,
     double lon,
     double lat,
     double alt,
@@ -295,7 +298,7 @@ int TacViewOutput::OneFrameMissileState(
     int object_id,
 	int missile_id,
 	std::string missile_color,
-	bool missile_live,
+	int missile_live,
     double lon,
     double lat,
     double alt,
